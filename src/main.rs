@@ -8,14 +8,14 @@ fn index() -> &'static str {
     "Hello, world!"
 }
 
-#[get("/world")]
-fn world() -> &'static str {
-    "Hello, world4!"
+#[get("/<name>/<age>")]
+fn hello(name: String, age: String) -> String {
+    format!("hi {} {}", name, age)
 }
 
 fn main() {
     rocket::ignite()
         .mount("/", routes![index])
-        .mount("/hello", routes![world])
+        .mount("/", routes![hello])
         .launch();
 }
