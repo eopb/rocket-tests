@@ -8,10 +8,9 @@ fn index() -> &'static str {
     "Hello, world!"
 }
 
-#[get("/world")] // <- route attribute
+#[get("/world")]
 fn world() -> &'static str {
-    // <- request handler
-    "Hello, world2!"
+    "Hello, world4!"
 }
 
 fn main() {
