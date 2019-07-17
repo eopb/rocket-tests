@@ -8,6 +8,15 @@ fn index() -> &'static str {
     "Hello, world!"
 }
 
+#[get("/world")] // <- route attribute
+fn world() -> &'static str {
+    // <- request handler
+    "Hello, world2!"
+}
+
 fn main() {
-    rocket::ignite().mount("/", routes![index]).launch();
+    rocket::ignite()
+        .mount("/", routes![index])
+        .mount("/hello", routes![world])
+        .launch();
 }
