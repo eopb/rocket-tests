@@ -6,6 +6,7 @@ extern crate rocket;
 use rocket_contrib::serve::StaticFiles;
 use rocket_contrib::templates::Template;
 use serde::{Deserialize, Serialize};
+use serde_json::json;
 use std::collections::HashMap;
 
 #[derive(Deserialize, Debug, Serialize)]
@@ -22,15 +23,14 @@ fn index() -> &'static str {
 
 #[get("/<user>")]
 fn for_github_user(user: String) -> Template {
-    let resp: Vec<Repo> = reqwest::get(&format!("https://api.github.com/users/{}/repos", user))
-        .unwrap()
-        .json()
-        .unwrap();
-    let mut context = HashMap::new();
-    context.insert("user", user);
-    context.insert("message", format!("{:#?}", resp));
-
-    Template::render("user", &context)
+    let mut resp = json!({
+        "repos": &reqwest::get(&format!("https://api.github.com/users/{}/repos", user))
+                .unwrap()
+                .json::<Vec<Repo>>()
+                .unwrap(),
+        "user": user
+    });
+    Template::render("user", &resp)
 }
 
 fn main() {
@@ -40,4 +40,4 @@ fn main() {
         .attach(Template::fairing())
         .mount("/public/style", StaticFiles::from("style"))
         .launch();
-}
+} // serde_json::from_str(&serialized).unwrap();

@@ -5,12 +5,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="stylesheet" type="text/css" href="/public/style/style.css">
-    <title>Repositories owned by {{user}}</title>
+    <title>Repositories owned by</title>
 </head>
 
 <body>
-    <h1>Repositories owned by {{user}}</h1>
-    <p>{{message}}</p>
+    Repositories owned by {{user}}
+    {{#each repos}}
+    <h1>Repositories owned by {{name}}</h1>
+    <p>{{description}}</p>
+    {{/each}}
 </body>
 
 </html>
