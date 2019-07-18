@@ -17,27 +17,29 @@ struct Repo {
 }
 
 #[get("/")]
-fn index() -> &'static str {
-    "Hello, world!"
+fn index() -> Template {
+    Template::render("index", &json!({}))
 }
 
 #[get("/<user>")]
 fn for_github_user(user: String) -> Template {
-    let mut resp = json!({
-        "repos": &reqwest::get(&format!("https://api.github.com/users/{}/repos", user))
-                .unwrap()
-                .json::<Vec<Repo>>()
-                .unwrap(),
-        "user": user
-    });
-    Template::render("user", &resp)
+    Template::render(
+        "user",
+        &json!({
+            "repos": &reqwest::get(&format!("https://api.github.com/users/{}/repos", user))
+                    .unwrap()
+                    .json::<Vec<Repo>>()
+                    .unwrap(),
+            "user": user
+        }),
+    )
 }
 
 fn main() {
     rocket::ignite()
         .mount("/", routes![index])
         .mount("/github", routes![for_github_user])
-        .attach(Template::fairing())
         .mount("/public/style", StaticFiles::from("style"))
+        .attach(Template::fairing())
         .launch();
 } // serde_json::from_str(&serialized).unwrap();
